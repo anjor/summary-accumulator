@@ -1,6 +1,7 @@
-import os
-from dotenv import load_dotenv
+from eval import evaluate_accuracy
 from models import chat
+
+import jsonlines
 
 
 def accumulate_summary(summary: str, new_message: str, model: str):
@@ -12,7 +13,6 @@ def accumulate_summary(summary: str, new_message: str, model: str):
     )
 
     if "no new relevant content" in new_relevant_content.lower():
-        print(new_relevant_content)
         return summary
     else:
         # Generate updated summary
@@ -22,21 +22,19 @@ def accumulate_summary(summary: str, new_message: str, model: str):
 
 
 def main():
-    load_dotenv()
-
-    summary = "The user wants a todo list application written in python."
-    new_message = (
-        "Scratch that. I would actually prefer to code scrabble, and let's use go."
-    )
-
-    for i in range(5):
-        print("OpenAI: " + accumulate_summary(summary, new_message, "gpt-4o"))
-        print(
-            "Anthropic: "
-            + accumulate_summary(summary, new_message, "claude-3-5-sonnet-20240620")
-        )
-
-        print("==========")
+    with jsonlines.open("sample_data.jsonl", "r") as jsonl_file:
+        test_cases = [
+            {
+                "expected_output": test["expected_output"],
+                "actual_output": accumulate_summary(
+                    summary=test["initial_summary"],
+                    new_message=test["new_message"],
+                    model="gpt-4o",
+                ),
+            }
+            for test in jsonl_file
+        ]
+        print(evaluate_accuracy(test_cases=test_cases))
 
 
 if __name__ == "__main__":

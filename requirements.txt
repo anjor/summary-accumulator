@@ -1,3 +1,11 @@
-python-dotenv==1.0.1
-openai==1.35.7
+# LLM SDKs
 anthropic==0.30.0
+openai==1.35.7
+
+# Eval tools
+torch==2.3.1
+transformers==4.42.3
+
+# Other dependencies
+jsonlines==4.0.0
+python-dotenv==1.0.1
