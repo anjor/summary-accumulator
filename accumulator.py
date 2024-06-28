@@ -29,7 +29,7 @@ def main():
         "Scratch that. I would actually prefer to code scrabble, and let's use go."
     )
 
-    for i in range(3):
+    for i in range(5):
         print("OpenAI: " + accumulate_summary(summary, new_message, "gpt-4o"))
         print(
             "Anthropic: "
