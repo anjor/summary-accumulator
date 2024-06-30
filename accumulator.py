@@ -22,19 +22,24 @@ def accumulate_summary(summary: str, new_message: str, model: str):
 
 
 def main():
-    with jsonlines.open("sample_data.jsonl", "r") as jsonl_file:
-        test_cases = [
-            {
-                "expected_output": test["expected_output"],
-                "actual_output": accumulate_summary(
-                    summary=test["initial_summary"],
-                    new_message=test["new_message"],
-                    model="gpt-4o",
-                ),
-            }
-            for test in jsonl_file
-        ]
-        print(evaluate_accuracy(test_cases=test_cases))
+    num_experiments = 10
+    score = 0
+    for i in range(num_experiments):
+        with jsonlines.open("sample_data.jsonl", "r") as jsonl_file:
+            test_cases = [
+                {
+                    "expected_output": test["expected_output"],
+                    "actual_output": accumulate_summary(
+                        summary=test["initial_summary"],
+                        new_message=test["new_message"],
+                        model="gpt-4o",
+                    ),
+                }
+                for test in jsonl_file
+            ]
+            score += evaluate_accuracy(test_cases=test_cases)
+
+    print(f"{score/num_experiments}")
 
 
 if __name__ == "__main__":
